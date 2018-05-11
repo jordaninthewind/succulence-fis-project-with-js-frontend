@@ -1,0 +1,24 @@
+<h3>Garden Name: <%= @garden.name %> - <%= link_to "Edit Garden", edit_garden_path(@garden) %>
+ 	<%= link_to "Delete Garden", garden_path(@garden), method: :delete, data: { confirm: 'Are you sure?' } %>
+</h3> 
+
+<ul><% @garden.garden_plants.reverse.each do |gp| %>
+<li><%= link_to gp.plant.name, plant_path(gp.plant) %>, Last Watered: <%= normalize_time(gp.last_watered) %>
+	- <%= link_to "View Plant", garden_garden_plant_path(@garden, gp) %>
+	<% if overdue_notice(gp) %> - <%= link_to "Water Plant", water_plant_path(@garden, gp) %> - <% end %>
+ 	- <%= link_to "Mulch Plant", garden_garden_plant_path(@garden, gp),
+			method: :delete, data: { confirm: 'Are you sure?' } %>
+
+<p><%= overdue_notice(gp) %></p></li><% end %></ul>
+
+<h3>Select a Plant to Add to Your Garden:</h3>
+
+<%= form_tag add_garden_plant_path(@garden), :method => :get do %>
+<%= collection_select :plant, :id, Plant.order('name ASC'), :id, :name %>
+<%= submit_tag "Add Plant" %>
+<% end %>
+
+<h3>OR</h3>
+
+<%= link_to "Make a New Plant", new_garden_plant_path(@garden) %>
+<br><br>
